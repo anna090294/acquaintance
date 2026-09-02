@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Жека Крутой | Авторитетний рух</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,900&display=swap');
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body { 
+      font-family: 'Montserrat', sans-serif; 
+      background: #030303; 
+      color: #f0f0f0;
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      padding: 20px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 30%, #260000 0%, #030303 70%),
+        repeating-linear-gradient(45deg, rgba(255,0,0,0.01) 0px, rgba(255,0,0,0.01) 2px, transparent 2px, transparent 4px);
+    }
+
+    /* Пульсуюче підсвічування днища */
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 300px;
+      background: rgba(255, 0, 0, 0.25);
+      filter: blur(140px);
+      z-index: -1;
+      pointer-events: none;
+      animation: pulseGlow 3s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      0% { opacity: 0.2; transform: translateX(-50%) scale(0.9); }
+      100% { opacity: 0.5; transform: translateX(-50%) scale(1.15); }
+    }
+    
+    .card {
+      position: relative;
+      background: linear-gradient(145deg, #0f0f0f, #080808);
+      width: 100%;
+      max-width: 950px;
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), 0 0 50px rgba(255, 0, 0, 0.2);
+      border: 2px solid #222;
+      overflow: hidden;
+    }
+
+    /* Карбонова рамка-акцент зверху */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #ff0000, #ff9900, #ff0000, #ff0000);
+      background-size: 300% 100%;
+      animation: borderMove 2.5s linear infinite;
+    }
+
+    @keyframes borderMove {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 300% 0%; }
+    }
+    
+    .header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 35px;
+      gap: 30px;
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 30px;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .avatar {
+      width: 180px;
+      height: 180px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 3px solid #ff0000;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+      filter: contrast(1.15);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .avatar:hover {
+      transform: scale(1.06) rotate(-3deg);
+      box-shadow: 0 0 60px rgba(255, 0, 0, 0.9);
+    }
+    
+    h1 { 
+      font-size: 48px; 
+      font-weight: 900;
+      color: #fff; 
+      text-transform: uppercase;
+      font-style: italic;
+      letter-spacing: -1px;
+      text-shadow: 3px 3px 0px rgba(255, 0, 0, 0.4);
+    }
+    
+    .age { 
+      display: inline-block;
+      font-size: 14px; 
+      color: #ff3333; 
+      background: rgba(255, 0, 0, 0.12);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-weight: 700; 
+      border: 1px solid rgba(255, 0, 0, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      width: fit-content;
+    }
+    
+    .block { 
+      margin-top: 35px; 
+    }
+    
+    .block h2 { 
+      font-size: 17px; 
+      color: #ff3333; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      margin-bottom: 12px; 
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .block p { 
+      font-size: 18px; 
+      color: #cccccc; 
+      line-height: 1.7; 
+    }
+
+    /* Теги */
+    .tags {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .tag {
+      background: #141414;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid #333;
+      text-transform: uppercase;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .tag:hover {
+      background: #ff0000;
+      border-color: #ff0000;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+      transform: translateY(-6px) scale(1.06);
+    }
+    
+    .fact-box {
+      background: #111;
+      padding: 24px 28px;
+      border-radius: 12px;
+      border-left: 5px solid #ff0000;
+      border: 1px solid #1f1f1f;
+      border-left-width: 5px;
+    }
+
+    .fact-box p {
+      color: #ddd;
+      font-style: italic;
+    }
+
+    /* КРУТА АРКАДНА ГРА */
+    .arcade-container {
+      background: #050505;
+      border: 2px solid #ff0000;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+    }
+
+    .arcade-header {
+      display: flex;
+      justify-content: space-between;
+      color: #fff;
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    canvas {
+      background: #111;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #333;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+    }
+
+    .arcade-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .arcade-btn {
+      background: #ff0000;
+      color: #fff;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+      font-family: 'Montserrat', sans-serif;
+      transition: 0.1s;
+    }
+
+    .arcade-btn:active {
+      transform: scale(0.95);
+      background: #cc0000;
+    }
+
+    /* Адаптив */
+    @media (max-width: 700px) {
+      .header-flex {
+        flex-direction: column-reverse;
+        text-align: center;
+      }
+      .info { align-items: center; }
+      .card { padding: 30px 20px; }
+      h1 { font-size: 36px; }
+      .tags { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header-flex">
+      <div class="info">
+        <h1>Жека Крутой</h1>
+        <span class="age">Возраст • Взрослый(14)</span>
+        <span class="age">Рост • Карьерный</span>
+        <span class="age">Пол • Ламинат</span>
+      </div>
+      <div class="avatar-wrapper">
+        <img src="qwe.jpg" alt="Жека Крутой" class="avatar">
+      </div>
+    </div>
+
+    <div class="block">
+      <h2>Суть дела</h2>
+      <p>Ну я короче крутой пацан, делаю модельки в майнкрафт, люблю музыку, хочу дома автозвук, чтобы музыка да класс е</p>
+      
+      <div class="tags">
+        <span class="tag">🧱 привет</span>
+        <span class="tag">🔊 автозвук</span>
+        <span class="tag">🎵 музыка</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <h2>Круто</h2>
+      <div class="fact-box">
+        <p>Я крутой пацан и у меня есть други и подруги</p>
+      </div>
+    </div>
+
+    <!-- АРКАДНА ГРА -->
+    <div class="block">
+      <h2>Аркада: Гонка Жеки 🏎️</h2>
+      <div class="arcade-container">
+        <div class="arcade-header">
+          <span id="scoreText">Очки: 0</span>
+          <span id="recordText">Рекорд: 0</span>
+        </div>
+        <canvas id="gameCanvas" width="400" height="250"></canvas>
+        <div class="arcade-controls">
+          <button class="arcade-btn" onclick="moveLeft()">◀ НАЛІВО</button>
+          <button class="arcade-btn" onclick="moveRight()">НАПРАВО ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let score = 0;
+    let record = 0;
+    let isGameOver = false;
+
+    // Машинка Жеки (три лінії: x = 85, 185, 285)
+    let lanes = [85, 185, 285];
+    let playerLane = 1; // середня лінія
+    let playerY = 190;
+
+    // Перешкоди
+    let obstacles = [];
+
+    function moveLeft() {
+      if (isGameOver) { resetGame(); return; }
+      if (playerLane > 0) playerLane--;
+    }
+
+    function moveRight() {
+      if (isGameOver) { resetGame(); return; }
+      if (playerLane < 2) playerLane++;
+    }
+
+    // Керування клавіатурою (стрілочки або A/D)
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "ф") moveLeft();
+      if (e.key === "ArrowRight" || e.key === "d" || e.key === "в") moveRight();
+    });
+
+    function spawnObstacle() {
+      let randomLane = Math.floor(Math.random() * 3);
+      obstacles.push({
+        lane: randomLane,
+        y: -40,
+        width: 30,
+        height: 50,
+        color: Math.random() > 0.5 ? "#ff0000" : "#ff9900"
+      });
+    }
+
+    function resetGame() {
+      score = 0;
+      obstacles = [];
+      isGameOver = false;
+      playerLane = 1;
+    }
+
+    let frameCount = 0;
+    function update() {
+      if (!isGameOver) {
+        frameCount++;
+        if (frameCount % 60 === 0) {
+          spawnObstacle();
+          score += 10;
+          if (score > record) record = score;
+        }
+
+        // Рух перешкод вниз
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          obstacles[i].y += 4;
+
+          // Перевірка зіткнення
+          let targetX = lanes[obstacles[i].lane];
+          let playerX = lanes[playerLane];
+
+          if (
+            obstacles[i].y + obstacles[i].height >= playerY &&
+            obstacles[i].y <= playerY + 40 &&
+            Math.abs(targetX - playerX) < 20
+          ) {
+            isGameOver = true;
+          }
+
+          // Видалення за екраном
+          if (obstacles[i].y > canvas.height) {
+            obstacles.splice(i, 1);
+          }
+        }
+      }
+
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    function draw() {
+      // Очистка екрана
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Малюємо дороги (смуги)
+      ctx.strokeStyle = "#222";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([15, 15]);
+      ctx.beginPath();
+      ctx.moveTo(135, 0); ctx.lineTo(135, canvas.height);
+      ctx.moveTo(265, 0); ctx.lineTo(265, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Малюємо перешкоди (поліція / дерева)
+      for (let obs of obstacles) {
+        ctx.fillStyle = obs.color;
+        ctx.fillRect(lanes[obs.lane] - 15, obs.y, obs.width, obs.height);
+        // Віконце перешкоди
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(lanes[obs.lane] - 10, obs.y + 5, 20, 10);
+      }
+
+      // Малюємо тачку Жеки
+      let px = lanes[playerLane];
+      ctx.fillStyle = "#00ffff";
+      ctx.fillRect(px - 15, playerY, 30, 40); // Корпус
+      ctx.fillStyle = "#ff0000";
+      ctx.fillRect(px - 10, playerY + 5, 20, 10); // Лобове скло
+
+      // Текст очок
+      document.getElementById("scoreText").innerText = "Очки: " + score;
+      document.getElementById("recordText").innerText = "Рекорд: " + record;
+
+      // Якщо кінець гри
+      if (isGameOver) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = "#ff0000";
+        ctx.font = "bold 24px Montserrat";
+        ctx.textAlign = "center";
+        ctx.fillText("АВТОРИТЕТ ЗБИТИЙ!", canvas.width / 2, canvas.height / 2 - 10);
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "14px Montserrat";
+        ctx.fillText("Тисни кнопки ще раз для старту", canvas.width / 2, canvas.height / 2 + 25);
+      }
+    }
+
+    // Запуск гри
+    update();
+  </script>
+
+</body>
+</html>

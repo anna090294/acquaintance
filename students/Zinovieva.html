@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глеб 67 — Профиль</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .box {
+            background: #1e293b;
+            padding: 50px 40px;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        p strong {
+            color: #38bdf8;
+        }
+
+        .photo-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f43f5e;
+            margin-top: 20px;
+            margin-bottom: 16px;
+        }
+
+        img.avatar {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #8b5cf6;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        img.avatar:hover {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.9);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-card {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            transition: border-color 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: #8b5cf6;
+        }
+
+        .info-card h3 {
+            font-size: 20px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card ul {
+            list-style: none;
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        .info-card ul li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .info-card ul li::before {
+            content: "•";
+            color: #ec4899;
+            font-weight: bold;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .info-card p {
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .fact-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+            border: 1px solid #8b5cf6;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .fact-card h3 {
+            color: #f43f5e;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        /* Зафиксированная кнопка, которая видна всегда */
+        .btn-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.6);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.8);
+            background: linear-gradient(135deg, #f43f5e, #a855f7);
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .falling-img {
+            position: fixed;
+            top: -120px;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0.8;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .box {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 36px;
+            }
+            p {
+                font-size: 18px;
+            }
+            img.avatar {
+                width: 160px;
+                height: 160px;
+            }
+            .btn-container {
+                bottom: 20px;
+                right: 50%;
+                transform: translateX(50%);
+                width: 90%;
+            }
+            .btn {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Я ГЛЕБ 67</h1>
+        <p><strong>О себе:</strong> я бедный студент и играю в кампуктер 24/7. Выиграю любого в БС 1v1 на Диномайке 🧨</p>
+        
+        <p class="photo-title">Я:</p>
+        <img class="avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1MrPaZ2L6tozWxh8CsbdBzqdvzOROg7Yb_EeiVnzLNw&s=10" alt="Глеб">
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🧠 Soft Skills</h3>
+                <ul>
+                    <li>Стрессоустойчивость в катках</li>
+                    <li>Работа в команде (если не руинят)</li>
+                    <li>Юмор и адаптивность</li>
+                    <li>Чувство стиля в коде</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>🎮 Хобби</h3>
+                <ul>
+                    <li>Brawl Stars</li>
+                    <li>Кодинг на чилле</li>
+                    <li>Игра на проекте Shinri trial</li>
+                    <li>Залипание в стримы</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>💻 Что умею</h3>
+                <ul>
+                    <li>Базовый HTML & CSS (сильно преувеличено)</li>
+                    <li>Играть за диномайка</li>
+                    <li>Сидеть за пк 5+ часов</li>
+                    <li>Быстро печатать (сильно преувеличено)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>⚡ Моя суперсила</h3>
+                <p>Могу переиграть любого на 1v1, давать double jump на Диномайке!</p>
+            </div>
+
+            <div class="info-card">
+                <h3>🎯 Чему хочу научиться</h3>
+                <ul>
+                    <li>Верстать крутые сайты без гугла</li>
+                    <li>Продвинутому JavaScript</li>
+                    <li>Апать праймы без слива</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>🚀 Кем хочу стать</h3>
+                <p>Крутым Front-End разработчиком (и киберспортсменом на полставки, если позовут).</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <h3>✨ Интересный факт</h3>
+            <p>нету</p>
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn" onclick="spawnImages()">Нажми на меня</button>
+    </div>
+
+    <audio id="bg-music" src="67.mp3"></audio>
+
+    <script>
+        function spawnImages() {
+            const audio = document.getElementById('bg-music');
+            if (audio) {
+                audio.volume = 1.0;
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Ошибка воспроизведения аудио:", e));
+            }
+
+            const count = 15;
+            const imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZt92O47CXyTm-CVNqkC1aYPusImB_wuK1E6ahgGqPQg&s';
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.classList.add('falling-img');
+
+                    const randomX = Math.random() * 90;
+                    img.style.left = randomX + 'vw';
+
+                    const randomSize = Math.random() * 60 + 60;
+                    img.style.width = randomSize + 'px';
+                    img.style.height = randomSize + 'px';
+
+                    const randomDuration = Math.random() * 2 + 1.5;
+                    img.style.animationDuration = randomDuration + 's';
+
+                    document.body.appendChild(img);
+
+                    setTimeout(() => {
+                        img.remove();
+                    }, randomDuration * 1000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>

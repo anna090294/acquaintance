@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Caacupe+One&display=swap');
+</style>
+
+</head>
+<body>
+<div class="box">
+    <div class="info">
+        <div class="info_item1">
+            <h2>My info</h2>
+            <p>Меня зовут София, мне 16 лет. Я учусь в ШКМ с 2023 года и мои навыки за три года учёбы тут меня впечатляют, ведь я научилась многому в сфере программирования и планирую связать с этим своё будущее. Имею пару хобби: игра на гитаре, изучение иностранных языков и компьютерные игры. Мне вообще нравится, когда всё устроено логично, понятно и без лишнего хаоса. Мои друзья и близкие отзываются обо мне как об ответственном и самостоятельном человеке, который всегда готов пойти навстречу и никогда не оставит в трудной ситуации. Для многих я могу показаться закрытым в себе интровертом, но на самом деле мне очень нравитсякоммуницировать с людьми. Мне нравится точность и системность: я люблю всё планировать, будь то учёба или расчёт бюджета на пикник. Я активный человек и всегда "за" какое-то путешествие, будь то поход с друзьями или поездка по странам с родителями. Насчёт хобби в плане игр, мои вкусы разделяются на сюжетные игры (Metro 2033, The Last Of Us, The Walking Dead) и игры, основаны на развитии реакции (osu!). Также я очень люблю писать веб-странички и эксперементировать с ними. По большей части мне нравится работать с технологией FlexBox и с библиотекой JS/PHP. У меня есть мечта: сдать НМТ на приличные баллы и поступить в КНУ имени Тараса Шевченка.</p>
+        </div>
+        <div class="info_item2">
+            <img src="img/photo_2026-08-31_19-06-24.jpg" alt="">
+        </div>
+    </div>
+</div>
+    <style>
+        body{
+            background: rgb(199, 199, 147);
+        }
+        .box{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 127px;
+        }
+        .info{
+            width: 1280px;
+            height: 450px;
+            border: 2px solid black;
+            background: rgb(255, 255, 202);
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+        .info:hover {
+    border-color: #690707;
+    box-shadow: 
+        0 0 10px #690707,
+        0 0 25px #690707,
+        0 0 45px #690707,
+        inset 0 0 15px rgba(168, 85, 247, 0.3);
+    transform: translateY(-3px);
+}
+        .info_item1{
+            width: 70%;
+            height: auto;
+        }
+        .info_item2{
+            width: 40%;
+            height: auto;
+        }
+        .info_item2 img{
+            width: 300px;
+            height: 400px;
+            padding-left: 100px;
+        }
+        h2{
+            font-size: 50px;
+            text-align: center;
+            font-family: "Caacupe One", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            color: rgb(101, 86, 54);
+        }
+        p{
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 15px;
+            padding-left: 20px;
+            padding-bottom: 20px;
+            line-height: 23px;
+            color: rgb(101, 86, 54);
+        }
+    </style>
+</body>
+</html>

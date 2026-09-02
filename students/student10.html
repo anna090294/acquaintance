@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивное Портфолио | Denis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.75);
+            --border-color: rgba(240, 246, 252, 0.1);
+            --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.3);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+        }
+
+        /* Пасхальный режим "Матрица" */
+        body.matrix-mode {
+            --bg-color: #051005;
+            --card-bg: rgba(10, 30, 10, 0.85);
+            --border-color: rgba(0, 255, 65, 0.2);
+            --accent: #00ff41;
+            --accent-glow: rgba(0, 255, 65, 0.4);
+            --text-primary: #00ff41;
+            --text-secondary: #008f11;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, var(--accent-glow) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(137, 87, 229, 0.08) 0%, transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            perspective: 1000px;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Частицы эффектов */
+        #fx-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Полноэкранный видео-оверлей */
+        #fullscreen-video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #fullscreen-video-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #fullscreen-video-overlay video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 
+                        0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+            text-align: center;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        /* Статус в сети */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2ea043;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #2ea043;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 24px;
+            cursor: pointer;
+        }
+        .avatar img{
+            width: 200px;
+            height: 200px;
+        }
+        .avatar-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0.8;
+            animation: rotateGlow 6s linear infinite;
+        }
+
+        @keyframes rotateGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #161b22;
+            z-index: 2;
+            border: 3px solid var(--bg-color);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-container:hover .avatar {
+            transform: scale(0.96);
+        }
+
+        .avatar-hint {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .avatar-container:hover .avatar-hint {
+            opacity: 1;
+            transform: translateX(-50%) translateY(2px);
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .role {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(13, 17, 23, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            border-radius: 16px;
+            gap: 6px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #0d1117;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .tab-content {
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-box {
+            background: rgba(13, 17, 23, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 12px;
+        }
+
+        .content-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .content-box p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .skill-badge {
+            background: rgba(88, 166, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .skill-badge:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: var(--accent);
+            color: #0d1117;
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .social-btn:hover {
+            background: var(--accent);
+            color: #0d1117;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .social-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 580px) {
+            .profile-card { padding: 24px 16px; }
+            .social-links { grid-template-columns: 1fr; }
+        }
+        .aaa{
+            width: 130px;
+            height: 130px;
+            border-radius: 10110px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- Полноэкранный видео-слой -->
+    <div id="fullscreen-video-overlay">
+        <video id="vidd-player" src="vidd.mp4" muted playsinline></video>
+    </div>
+
+    <div class="container">
+        <div class="profile-card" id="tiltCard">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>В сети • В поиске CS2</span>
+            </div>
+
+            <div class="avatar-container" id="avatarTrigger">
+                <div class="avatar-ring"></div>
+                    <img class="aaa" src="images.jpg" alt="">
+            </div>
+
+            <h1 class="name">Денис</h1>
+            <p class="role">Senior UI/UX & Frontend Engineer</p>
+
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('about', this)">О себе</button>
+                <button class="tab-btn" onclick="switchTab('skills', this)">Навыки</button>
+                <button class="tab-btn" onclick="switchTab('contacts', this)">Контакты</button>
+            </div>
+
+            <div id="about" class="tab-content active">
+                <div class="content-box">
+                    <h3>Приветствую в моём пространстве 🚀</h3>
+                    <p>Проектирую удобные интерфейсы, верстаю интерфейсы высокой сложности и периодически раздаю эймы в Counter-Strike 2. Кликай по навыкам или аватарке — тут есть секретки!</p>
+                </div>
+            </div>
+
+            <div id="skills" class="tab-content">
+                <div class="content-box">
+                    <h3>Технологический стек & Хоби</h3>
+                    <div class="skills-container">
+                        <span class="skill-badge" onclick="popParticles(event)">Tailwind CSS</span>
+                        <span class="skill-badge" onclick="popParticles(event)">CS2 (Global Elite) 🎯</span>
+                        <span class="skill-badge" onclick="popParticles(event)">CSS3 / Animation</span>
+                        <span class="skill-badge" onclick="popParticles(event)">Figma UI/UX</span>
+                        <span class="skill-badge" onclick="popParticles(event)">JavaScript / ES6+</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contacts" class="tab-content">
+                <div class="content-box" style="margin-bottom: 0;">
+                    <h3>Давайте создадим что-то крутое</h3>
+                    <div class="social-links" style="margin-top: 15px;">
+                        <a href="https://t.me/" target="_blank" class="social-btn" onclick="playSound(600, 'sine', 0.1)">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                            Telegram
+                        </a>
+                        <a href="https://github.com/" target="_blank" class="social-btn" onclick="playSound(600, 'sine', 0.1)">
+                            <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+                            GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Синтезатор звука (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq = 440, type = 'sine', duration = 0.1) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        // --- 2. Переключение вкладок со звуком ---
+        function switchTab(tabId, btn) {
+            playSound(480, 'sine', 0.08);
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // --- 3. Полноэкранное видео на 1 секунду при наведении ---
+        const avatarTrigger = document.getElementById('avatarTrigger');
+        const videoOverlay = document.getElementById('fullscreen-video-overlay');
+        const videoPlayer = document.getElementById('vidd-player');
+        let hideTimeout = null;
+
+        avatarTrigger.addEventListener('mouseenter', () => {
+            if (hideTimeout) clearTimeout(hideTimeout);
+            videoOverlay.classList.add('active');
+            videoPlayer.currentTime = 0;
+            videoPlayer.play().catch(e => console.log("Автовоспроизведение заблокировано:", e));
+
+            hideTimeout = setTimeout(() => {
+                videoOverlay.classList.remove('active');
+                videoPlayer.pause();
+            }, 1000);
+        });
+
+        // --- 4. 3D Tilt эффект карточки ---
+        const card = document.getElementById('tiltCard');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // --- 5. Эффект взрыва частиц при клике (Canvas) ---
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function popParticles(e) {
+            playSound(800, 'triangle', 0.15);
+            const rect = e.target.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    radius: Math.random() * 4 + 2,
+                    color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+                    alpha: 1
+                });
+            }
+        }
+
+        function renderParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.fill();
+
+                if (p.alpha <= 0) particles.splice(index, 1);
+            });
+            requestAnimationFrame(renderParticles);
+        }
+        renderParticles();
+
+        // --- 6. Пасхалка: Тройной клик по аватару меняет тему на "Matrix Mode" ---
+        let clickCount = 0;
+        avatarTrigger.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 3) {
+                document.body.classList.toggle('matrix-mode');
+                playSound(200, 'sawtooth', 0.4);
+                clickCount = 0;
+            }
+            setTimeout(() => clickCount = 0, 1000);
+        });
+    </script>
+</body>
+</html>
